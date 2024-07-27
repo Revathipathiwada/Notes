@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Notes</title>
+    <style>
+        body {
+            background: linear-gradient(45deg, #3b82f6, #9333ea);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: linear-gradient(45deg, #3b82f6, #9333ea);
+            border-bottom: 0;
+            margin-bottom: 0;
+            padding: 10px 20px; /* Adjust padding for better spacing */
+        }
+
+        .navbar-brand {
+            font-size: 25px;
+            font-weight: bold;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .button-custom {
+            font-weight: bold;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .btn-space {
+            margin-left: 15px; /* Space between buttons */
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: auto;
+            width: 80%;
+            max-width: 1200px;
+        }
+
+        .note-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-family: 'Times New Roman', Times, serif;
+            cursor: pointer; /* Added cursor style for better UX */
+        }
+
+        .note-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .note-title {
+            font-weight: bold;
+            font-size: 22px;
+        }
+
+        .note-content {
+            font-size: 16px;
+            color: #555;
+            max-height: 40px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .note-actions {
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .note-actions a {
+            margin-right: 10px;
+        }
+
+        .note-details {
+            margin-top: 20px;
+            background: #f1f1f1;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+            display: none; /* Initially hidden */
+        }
+
+        .note-details.active {
+            display: block;
+        }
+
+        .note-details h5 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a href="{% url 'editor' %}" class="navbar-brand">NotesApp</a>
+            <div class="navbar-nav ms-auto">
+                <a href="{% url 'create_note' %}" class="btn btn-primary button-custom">Create Note</a>
+                <a href="{% url 'logout' %}" class="btn btn-danger button-custom btn-space">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2 class="text">Your Notes</h2>
+        <div class="note-grid">
+            {% for note in notes %}
+            <div class="note-card col-md-3"
+                 onclick="showNoteDetails('{{ note.title|escapejs }}', '{{ note.content|escapejs }}')">
+                <div class="note-title">{{ note.title }}</div>
+                <div class="note-content">{{ note.content|truncatechars:50 }}</div>
+                <div class="note-actions">
+                    <a href="{% url 'edit_note' note.id %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'delete_note' note.id %}" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="note-details" id="noteDetails">
+            <h5 id="noteTitle"></h5>
+            <p id="noteContent"></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+JRIpN1wrnLPRiS4E+JDFb4bH1U67s6r52OTzjR" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-ppZ5B8rB3PTCEcEdfjIppQGVw3o9er5cK0N2hB0GrxA2hOUkeO5L7lPp1BEaX4EK" crossorigin="anonymous"></script>
+    <script>
+        function showNoteDetails(title, content) {
+            document.getElementById('noteTitle').innerText = title;
+            document.getElementById('noteContent').innerText = content;
+            document.getElementById('noteDetails').classList.add('active');
+        }
+    </script>
+</body>
+
+</html>
